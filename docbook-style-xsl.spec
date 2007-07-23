@@ -1,5 +1,5 @@
 %define Name docbook-style-xsl
-%define version 1.72.0
+%define version 1.73.0
 %define Release %mkrel 1
 
 Name:		%{Name}
@@ -21,7 +21,6 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 Source0:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-%{version}.tar.bz2
 Source1:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-doc-%{version}.tar.bz2
-%define Release 1mdk
 
 BuildArch:	noarch
 
@@ -113,5 +112,3 @@ fi
 %files doc
 %defattr (-,root,root)
 %doc doc docsrc
-
-
