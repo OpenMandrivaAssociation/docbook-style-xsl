@@ -1,6 +1,6 @@
 %define Name docbook-style-xsl
 %define version 1.73.0
-%define Release %mkrel 1
+%define Release %mkrel 2
 
 Name:		%{Name}
 Version:	%{version}
@@ -21,6 +21,8 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 Source0:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-%{version}.tar.bz2
 Source1:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-doc-%{version}.tar.bz2
+
+Patch:	docbook-xsl-1.73.0-manpages_charmap.patch
 
 BuildArch:	noarch
 
@@ -44,6 +46,7 @@ structure, customization, etc.
 %setup -n docbook-xsl-%{version} -q
 %setup -D -n docbook-xsl-%{version} -q -T -b 1
 
+%patch -p1
 
 %build
 # index jar files to please rpmlint
