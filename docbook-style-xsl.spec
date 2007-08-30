@@ -1,6 +1,6 @@
 %define Name docbook-style-xsl
-%define version 1.73.0
-%define Release %mkrel 3
+%define version 1.73.2
+%define Release %mkrel 1
 
 Name:		%{Name}
 Version:	%{version}
@@ -108,7 +108,7 @@ fi
 
 %files
 %defattr (-,root,root)
-%doc BUGS TODO README VERSION NEWS* COPYING RELEASE* INSTALL ChangeHistory.xml.zip
+%doc BUGS TODO README VERSION NEWS* COPYING RELEASE* INSTALL
 %{sgmlbase}/docbook/xsl-stylesheets-%{version}
 %{sgmlbase}/docbook/xsl-stylesheets
 
