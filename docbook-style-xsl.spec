@@ -1,27 +1,17 @@
-%define Name docbook-style-xsl
-%define version 1.75.1
-%define Release %mkrel 1
-
-Name:		%{Name}
-Version:	%{version}
-Release:	1
+Name:		docbook-style-xsl
+Version:	1.75.1
+Release:	%mkrel 1
 Group:		Publishing
-
 Summary:	Norman Walsh's modular stylesheets for DocBook
-
 License:	Artistic style
 URL:		http://sourceforge.net/projects/docbook
-
 Provides:	docbook-xsl = %{version}
 Requires:	docbook-dtd-xml
 Requires(pre):	sgml-common >= 0.6.3-2mdk
 # BuildRequires:	gcj-tools
-
 BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot 
-
 Source0:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-%{version}.tar.bz2
 Source1:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-doc-%{version}.tar.bz2
-
 BuildArch:	noarch
 
 %define sgmlbase %{_datadir}/sgml/
