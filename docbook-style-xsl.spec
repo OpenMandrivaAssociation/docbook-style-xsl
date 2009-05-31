@@ -1,10 +1,10 @@
 %define Name docbook-style-xsl
-%define version 1.74.3
+%define version 1.75.1
 %define Release %mkrel 1
 
 Name:		%{Name}
 Version:	%{version}
-Release:	%{Release}
+Release:	1
 Group:		Publishing
 
 Summary:	Norman Walsh's modular stylesheets for DocBook
