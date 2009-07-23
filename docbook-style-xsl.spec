@@ -1,5 +1,5 @@
 Name:		docbook-style-xsl
-Version:	1.75.1
+Version:	1.75.2
 Release:	%mkrel 1
 Group:		Publishing
 Summary:	Norman Walsh's modular stylesheets for DocBook
