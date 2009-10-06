@@ -1,6 +1,6 @@
 Name:		docbook-style-xsl
 Version:	1.75.2
-Release:	%mkrel 1
+Release:	%mkrel 2
 Group:		Publishing
 Summary:	Norman Walsh's modular stylesheets for DocBook
 License:	Artistic style
@@ -94,7 +94,7 @@ fi
 
 %files
 %defattr (-,root,root)
-%doc BUGS TODO README VERSION NEWS* COPYING RELEASE* INSTALL
+%doc BUGS TODO README VERSION NEWS* COPYING INSTALL
 %{sgmlbase}/docbook/xsl-stylesheets-%{version}
 %{sgmlbase}/docbook/xsl-stylesheets
 
