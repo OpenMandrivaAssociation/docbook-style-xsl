@@ -1,6 +1,6 @@
 Name:		docbook-style-xsl
-Version:	1.75.2
-Release:	%mkrel 5
+Version:	1.76.1
+Release:	%mkrel 1
 Group:		Publishing
 Summary:	Norman Walsh's modular stylesheets for DocBook
 License:	Artistic style
@@ -16,7 +16,7 @@ BuildArch:	noarch
 
 %define sgmlbase %{_datadir}/sgml/
 
-%Description
+%description
 These XSL stylesheets allow to convert any DocBook document to another
 printed (for example, RTF or PostScript) or online (for example, HTML) format.
 They are highly customizable.
@@ -39,17 +39,17 @@ structure, customization, etc.
 # jar -i extensions/*.jar
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT%{sgmlbase}/docbook/xsl-stylesheets-%{version} 
+rm -rf %{buildroot}
+mkdir -p %{buildroot}%{sgmlbase}/docbook/xsl-stylesheets-%{version} 
 # Camille 2006-05-29: those are dummy files to be removed in future releases; 2006-01-23: removed
 # rm -f doc/*/param.html doc/pi/pi.html
 cp -a VERSION common eclipse extensions fo highlighting html htmlhelp images javahelp lib template xhtml xhtml-1_1 manpages profiling params slides tools website roundtrip $RPM_BUILD_ROOT%{sgmlbase}/docbook/xsl-stylesheets-%{version}  
 
 ln -sf xsl-stylesheets-%{version} \
-	$RPM_BUILD_ROOT%{sgmlbase}/docbook/xsl-stylesheets
+	%{buildroot}%{sgmlbase}/docbook/xsl-stylesheets
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 #fix old buggy postun
 %triggerpostun -- docbook-style-xsl < 1.67.2-2mdk
