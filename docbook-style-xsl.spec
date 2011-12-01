@@ -43,7 +43,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}%{sgmlbase}/docbook/xsl-stylesheets-%{version} 
 # Camille 2006-05-29: those are dummy files to be removed in future releases; 2006-01-23: removed
 # rm -f doc/*/param.html doc/pi/pi.html
-cp -a VERSION common eclipse extensions fo highlighting html htmlhelp images javahelp lib template xhtml xhtml-1_1 manpages profiling params slides tools website roundtrip $RPM_BUILD_ROOT%{sgmlbase}/docbook/xsl-stylesheets-%{version}  
+cp -a VERSION common eclipse extensions fo highlighting html htmlhelp images javahelp lib template xhtml xhtml-1_1 manpages profiling params slides tools website roundtrip %{buildroot}%{sgmlbase}/docbook/xsl-stylesheets-%{version}  
 
 ln -sf xsl-stylesheets-%{version} \
 	%{buildroot}%{sgmlbase}/docbook/xsl-stylesheets
