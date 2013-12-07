@@ -3,7 +3,7 @@
 Summary:	Norman Walsh's modular stylesheets for DocBook
 Name:		docbook-style-xsl
 Version:	1.76.1
-Release:	3
+Release:	4
 Group:		Publishing
 License:	Artistic style
 Url:		http://sourceforge.net/projects/docbook
