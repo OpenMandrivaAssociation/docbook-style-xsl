@@ -1,77 +1,126 @@
-%define sgmlbase %{_datadir}/sgml/
+Name: docbook-style-xsl
+Version: 1.78.1
+Release: 2%{?dist}
 
-Summary:	Norman Walsh's modular stylesheets for DocBook
-Name:		docbook-style-xsl
-Version:	1.76.1
-Release:	5
-Group:		Publishing
-License:	Artistic style
-Url:		http://sourceforge.net/projects/docbook
-Source0:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-%{version}.tar.bz2
-Source1:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-doc-%{version}.tar.bz2
-BuildArch:	noarch
-Provides:	docbook-xsl = %{version}
-Requires:	docbook-dtd-xml
-Requires(pre):	sgml-common
+
+Summary: Norman Walsh's XSL stylesheets for DocBook XML
+
+License: DMIT
+URL: http://docbook.sourceforge.net/projects/xsl/
+
+Provides: docbook-xsl = %{version}
+Requires: docbook-dtd-xml
+# xml-common was using /usr/share/xml until 0.6.3-8.
+Requires: xml-common >= 0.6.3-8
+# libxml2 required because of usage of /usr/bin/xmlcatalog
+Requires(post): libxml2 >= 2.4.8
+Requires(postun): libxml2 >= 2.4.8
+# PassiveTeX before 1.21 can't handle the newer stylesheets.
+Conflicts: passivetex < 1.21
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+
+BuildArch: noarch
+Source0: http://downloads.sourceforge.net/docbook/docbook-xsl-%{version}.tar.bz2
+Source1: %{name}.Makefile
+Source2: http://downloads.sourceforge.net/docbook/docbook-xsl-doc-%{version}.tar.bz2
+
+#Avoid proportional-column-width for passivetex (bug #176766).
+Patch1: docbook-xsl-pagesetup.patch
+#Hard-code the margin-left work around to expect passivetex (bug #113456).
+Patch2: docbook-xsl-marginleft.patch
+#fix of #161619 - adjustColumnWidths now available
+Patch3: docbook-xsl-newmethods.patch
+#change a few non-constant expressions to constant - needed for passivetex(#366441)
+Patch4: docbook-xsl-non-constant-expressions.patch
+#added fixes for passivetex extension and list-item-body(#161371)
+Patch5: docbook-xsl-list-item-body.patch
+#workaround missing mandir section problem (#727251)
+Patch6: docbook-xsl-mandir.patch
+
 
 %description
-These XSL stylesheets allow to convert any DocBook document to another
-printed (for example, RTF or PostScript) or online (for example, HTML) format.
-They are highly customizable.
+These XSL stylesheets allow you to transform any DocBook XML document to
+other formats, such as HTML, FO, and XHMTL.  They are highly customizable.
 
-%package doc
-Summary         : Documentation for DocBook stylesheets
-Group       	: Books/Computer books
 
-%description doc
-This package contains the documentation for these stylesheets:
-structure, customization, etc.
- 
 %prep
-%setup -n docbook-xsl-%{version} -q
-%setup -D -n docbook-xsl-%{version} -q -T -b 1
+%setup -q -n docbook-xsl-%{version}
+pushd ..
+tar jxf %{SOURCE2}
+popd
+%patch1 -p1 -b .pagesetup
+%patch2 -p1 -b .marginleft
+%patch3 -p1 -b .newmethods
+%patch4 -p1 -b .nonconstant
+%patch5 -p1 -b .listitembody
+%patch6 -p1 -b .mandir
+
+cp -p %{SOURCE1} Makefile
+
+# fix of non UTF-8 files rpmlint warnings
+for fhtml in $(find ./doc -name '*.html' -type f)
+do
+  iconv -f ISO-8859-1 -t UTF-8 "$fhtml" -o "$fhtml".tmp
+  mv -f "$fhtml".tmp "$fhtml"
+  sed -i 's/charset=ISO-8859-1/charset=UTF-8/' "$fhtml"
+done
+
+for f in $(find -name "*'*")
+do
+  mv -v "$f" $(echo "$f" | tr -d "'")
+done
+
 
 %build
-# index jar files to please rpmlint
-# jar -i extensions/*.jar
+
 
 %install
-mkdir -p %{buildroot}%{sgmlbase}/docbook/xsl-stylesheets-%{version} 
-# Camille 2006-05-29: those are dummy files to be removed in future releases; 2006-01-23: removed
-# rm -f doc/*/param.html doc/pi/pi.html
-cp -a VERSION common eclipse extensions fo highlighting html htmlhelp images javahelp lib template xhtml xhtml-1_1 manpages profiling params slides tools website roundtrip %{buildroot}%{sgmlbase}/docbook/xsl-stylesheets-%{version}  
+DESTDIR=$RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
+make install BINDIR=$DESTDIR%{_bindir} DESTDIR=$DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}
+cp -a VERSION.xsl $DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}/VERSION.xsl
+ln -s xsl-stylesheets-%{version} \
+	$DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets
 
-ln -sf xsl-stylesheets-%{version} \
-	%{buildroot}%{sgmlbase}/docbook/xsl-stylesheets
+# Don't ship the extensions (bug #177256).
+rm -rf $DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets/extensions/*
 
-%post
-CATALOG=/etc/xml/catalog
-%{_bindir}/xmlcatalog --noout --add "rewriteSystem" \
-	"http://docbook.sourceforge.net/release/xsl/%{version}" \
-	"file:///usr/share/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
-%{_bindir}/xmlcatalog --noout --add "rewriteURI" \
-	"http://docbook.sourceforge.net/release/xsl/%{version}" \
-	"file:///usr/share/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
-%{_bindir}/xmlcatalog --noout --add "rewriteSystem" \
-	"http://docbook.sourceforge.net/release/xsl/current" \
-	"file:///usr/share/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
-%{_bindir}/xmlcatalog --noout --add "rewriteURI" \
-	"http://docbook.sourceforge.net/release/xsl/current" \
-	"file:///usr/share/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
 
-%postun
-# do not remove on upgrade
-CATALOG=/etc/xml/catalog
-if [ "$1" = "0" -a -x %{_bindir}/xmlcatalog -a -f $CATALOG ]; then
-  %{_bindir}/xmlcatalog --noout --del \
-	"file:///usr/share/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
-fi
+%clean
+DESTDIR=$RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %files
-%doc BUGS TODO README VERSION NEWS* COPYING INSTALL
-%{sgmlbase}/docbook/xsl-stylesheets-%{version}
-%{sgmlbase}/docbook/xsl-stylesheets
+%defattr (-,root,root,-)
+%doc BUGS
+%doc README
+%doc TODO
+%doc doc
+%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}
+%{_datadir}/sgml/docbook/xsl-stylesheets
 
-%files doc
-%doc doc docsrc
 
+%post
+CATALOG=%{_sysconfdir}/xml/catalog
+%{_bindir}/xmlcatalog --noout --add "rewriteSystem" \
+ "http://docbook.sourceforge.net/release/xsl/%{version}" \
+ "file://%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
+%{_bindir}/xmlcatalog --noout --add "rewriteURI" \
+ "http://docbook.sourceforge.net/release/xsl/%{version}" \
+ "file://%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
+%{_bindir}/xmlcatalog --noout --add "rewriteSystem" \
+ "http://docbook.sourceforge.net/release/xsl/current" \
+ "file://%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
+%{_bindir}/xmlcatalog --noout --add "rewriteURI" \
+ "http://docbook.sourceforge.net/release/xsl/current" \
+ "file://%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
+
+
+%postun
+# remove entries only on removal of package
+if [ "$1" = 0 ]; then
+  CATALOG=%{_sysconfdir}/xml/catalog
+  %{_bindir}/xmlcatalog --noout --del \
+   "file://%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}" $CATALOG
+fi
