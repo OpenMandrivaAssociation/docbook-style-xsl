@@ -4,7 +4,7 @@ Summary:	Norman Walsh's modular stylesheets for DocBook
 Name:		docbook-style-xsl
 Epoch:          1
 Version:	1.76.1
-Release:	4
+Release:	5
 Group:		Publishing
 License:	Artistic style
 Url:		http://sourceforge.net/projects/docbook
@@ -13,7 +13,7 @@ Source1:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-doc-%{version}.t
 BuildArch:	noarch
 Provides:	docbook-xsl = %{version}
 Requires:	docbook-dtd-xml
-Requires(pre):	sgml-common
+Requires(post,postun):	sgml-common
 
 %description
 These XSL stylesheets allow to convert any DocBook document to another
