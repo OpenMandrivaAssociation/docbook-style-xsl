@@ -3,13 +3,26 @@
 Summary:	Norman Walsh's modular stylesheets for DocBook
 Name:		docbook-style-xsl
 Epoch:          1
-Version:	1.76.1
+Version:	1.79.2
 Release:	6
 Group:		Publishing
 License:	Artistic style
 Url:		http://sourceforge.net/projects/docbook
-Source0:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-%{version}.tar.bz2
-Source1:	http://prdownloads.sourceforge.net/docbook/docbook-xsl-doc-%{version}.tar.bz2
+Source0: https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-nons-%{version}.tar.bz2
+Source1:	%{name}.Makefile
+Source2:  https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-doc-%{version}.tar.bz2
+#Avoid proportional-column-width for passivetex (bug #176766).
+Patch1: docbook-xsl-pagesetup.patch
+#Hard-code the margin-left work around to expect passivetex (bug #113456).
+Patch2: docbook-xsl-marginleft.patch
+#fix of #161619 - adjustColumnWidths now available
+Patch3: docbook-xsl-newmethods.patch
+#change a few non-constant expressions to constant - needed for passivetex(#366441)
+Patch4: docbook-xsl-non-constant-expressions.patch
+#added fixes for passivetex extension and list-item-body(#161371)
+Patch5: docbook-xsl-list-item-body.patch
+#workaround missing mandir section problem (#727251)
+Patch6: docbook-xsl-mandir.patch
 BuildArch:	noarch
 Provides:	docbook-xsl = %{version}
 Requires:	docbook-dtd-xml
@@ -27,23 +40,46 @@ Group       	: Books/Computer books
 %description doc
 This package contains the documentation for these stylesheets:
 structure, customization, etc.
- 
+
 %prep
-%setup -n docbook-xsl-%{version} -q
-%setup -D -n docbook-xsl-%{version} -q -T -b 1
+%setup -c -T -n docbook-xsl-%{version}
+tar jxf %{SOURCE0}
+mv docbook-xsl-nons-%{version}/* .
+pushd ..
+tar jxf %{SOURCE2}
+popd
+
+cp -p %{SOURCE1} Makefile
+
+%apply_patches
+
+# fix of non UTF-8 files rpmlint warnings
+for fhtml in $(find ./doc -name '*.html' -type f)
+do
+  iconv -f ISO-8859-1 -t UTF-8 "$fhtml" -o "$fhtml".tmp
+  mv -f "$fhtml".tmp "$fhtml"
+  sed -i 's/charset=ISO-8859-1/charset=UTF-8/' "$fhtml"
+done
+
+for f in $(find -name "*'*")
+do
+  mv -v "$f" $(echo "$f" | tr -d "'")
+done
 
 %build
 # index jar files to please rpmlint
 # jar -i extensions/*.jar
 
 %install
-mkdir -p %{buildroot}%{sgmlbase}/docbook/xsl-stylesheets-%{version} 
-# Camille 2006-05-29: those are dummy files to be removed in future releases; 2006-01-23: removed
-# rm -f doc/*/param.html doc/pi/pi.html
-cp -a VERSION common eclipse extensions fo highlighting html htmlhelp images javahelp lib template xhtml xhtml-1_1 manpages profiling params slides tools website roundtrip %{buildroot}%{sgmlbase}/docbook/xsl-stylesheets-%{version}  
+DESTDIR=$RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
+make install BINDIR=$DESTDIR%{_bindir} DESTDIR=$DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}
+cp -a VERSION.xsl $DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets-%{version}/VERSION.xsl
+ln -s xsl-stylesheets-%{version} \
+        $DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets
 
-ln -sf xsl-stylesheets-%{version} \
-	%{buildroot}%{sgmlbase}/docbook/xsl-stylesheets
+# Don't ship the extensions (bug #177256).
+rm -rf $DESTDIR%{_datadir}/sgml/docbook/xsl-stylesheets/extensions/*
 
 %post
 CATALOG=/etc/xml/catalog
@@ -69,7 +105,9 @@ if [ "$1" = "0" -a -x %{_bindir}/xmlcatalog -a -f $CATALOG ]; then
 fi
 
 %files
-%doc BUGS TODO README VERSION NEWS* COPYING INSTALL
+%doc BUGS
+%doc README
+%doc TODO
 %{sgmlbase}/docbook/xsl-stylesheets-%{version}
 %{sgmlbase}/docbook/xsl-stylesheets
 
