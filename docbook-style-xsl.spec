@@ -2,27 +2,29 @@
 
 Summary:	Norman Walsh's modular stylesheets for DocBook
 Name:		docbook-style-xsl
-Epoch:          1
+Epoch:		1
 Version:	1.79.2
-Release:	6
+Release:	7
 Group:		Publishing
 License:	Artistic style
 Url:		http://sourceforge.net/projects/docbook
-Source0: https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-nons-%{version}.tar.bz2
+Source0:	https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-nons-%{version}.tar.bz2
 Source1:	%{name}.Makefile
-Source2:  https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-doc-%{version}.tar.bz2
+Source2:	https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-doc-%{version}.tar.bz2
 #Avoid proportional-column-width for passivetex (bug #176766).
-Patch1: docbook-xsl-pagesetup.patch
+Patch1:		docbook-xsl-pagesetup.patch
 #Hard-code the margin-left work around to expect passivetex (bug #113456).
-Patch2: docbook-xsl-marginleft.patch
+Patch2:		docbook-xsl-marginleft.patch
 #fix of #161619 - adjustColumnWidths now available
-Patch3: docbook-xsl-newmethods.patch
+Patch3:		docbook-xsl-newmethods.patch
 #change a few non-constant expressions to constant - needed for passivetex(#366441)
-Patch4: docbook-xsl-non-constant-expressions.patch
+Patch4:		docbook-xsl-non-constant-expressions.patch
 #added fixes for passivetex extension and list-item-body(#161371)
-Patch5: docbook-xsl-list-item-body.patch
+Patch5:		docbook-xsl-list-item-body.patch
 #workaround missing mandir section problem (#727251)
-Patch6: docbook-xsl-mandir.patch
+Patch6:		docbook-xsl-mandir.patch
+#Non-recursive string.subst that doesn't kill smb.conf.5 generation
+Patch7:		docbook-style-xsl-non-recursive-string-subst.patch
 BuildArch:	noarch
 Provides:	docbook-xsl = %{version}
 Requires:	docbook-dtd-xml
@@ -34,8 +36,8 @@ printed (for example, RTF or PostScript) or online (for example, HTML) format.
 They are highly customizable.
 
 %package doc
-Summary         : Documentation for DocBook stylesheets
-Group       	: Books/Computer books
+Summary:	Documentation for DocBook stylesheets
+Group:		Books/Computer books
 
 %description doc
 This package contains the documentation for these stylesheets:
@@ -113,4 +115,3 @@ fi
 
 %files doc
 %doc doc docsrc
-
