@@ -4,9 +4,10 @@ Description: use EXSLT "replace" function when available
 Author: Peter De Wachter <pdewacht@gmail.com>
 Bug-Debian: https://bugs.debian.org/750593
 
---- docbook-xsl-1.78.1+dfsg.orig/docbook-xsl/lib/lib.xsl
-+++ docbook-xsl-1.78.1+dfsg/docbook-xsl/lib/lib.xsl
-@@ -10,7 +10,10 @@
+diff -Naur docbook-xsl-1.79.2/lib/lib.xsl docbook-xsl-1.79.2.tpg/lib/lib.xsl
+--- docbook-xsl-1.79.2/lib/lib.xsl	2016-12-09 22:47:31.000000000 +0000
++++ docbook-xsl-1.79.2.tpg/lib/lib.xsl	2017-11-02 09:32:57.175886240 +0000
+@@ -6,7 +6,10 @@
  
       This module implements DTD-independent functions
  
@@ -18,7 +19,7 @@ Bug-Debian: https://bugs.debian.org/750593
  
  <xsl:template name="dot.count">
    <!-- Returns the number of "." characters in a string -->
-@@ -56,6 +59,9 @@
+@@ -52,6 +55,9 @@
    <xsl:param name="replacement"/>
  
    <xsl:choose>
