@@ -53,7 +53,7 @@ popd
 
 cp -p %{SOURCE1} Makefile
 
-%apply_patches
+%autopatch -p1
 
 # fix of non UTF-8 files rpmlint warnings
 for fhtml in $(find ./doc -name '*.html' -type f)
