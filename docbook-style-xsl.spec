@@ -7,7 +7,7 @@ Version:	1.79.2
 Release:	10
 Group:		Publishing
 License:	Artistic style
-Url:		http://sourceforge.net/projects/docbook
+Url:		https://sourceforge.net/projects/docbook
 Source0:	https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-nons-%{version}.tar.bz2
 Source1:	%{name}.Makefile
 Source2:	https://github.com/docbook/xslt10-stylesheets/releases/download/release%2F{%version}/docbook-xsl-doc-%{version}.tar.bz2
