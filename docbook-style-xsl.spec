@@ -30,6 +30,7 @@ Provides:	docbook-xsl = %{version}
 Requires:	docbook-dtd-xml
 Requires(post,postun):	sgml-common
 
+BuildRequires:	make
 %description
 These XSL stylesheets allow to convert any DocBook document to another
 printed (for example, RTF or PostScript) or online (for example, HTML) format.
